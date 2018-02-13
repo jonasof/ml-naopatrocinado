@@ -4,7 +4,8 @@
     },
     "require": {
         "fabpot/goutte": "^3.2",
-        "sabre/event": "^3.0"
+        "sabre/event": "^3.0",
+        "gabrielrcouto/php-gui": "^0.1.0"
     },
     "autoload": {
         "psr-4": {
