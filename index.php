@@ -22,11 +22,10 @@
         $event_handler = new Event();
         $encontra_link = new EncontraLink($event_handler);
         try {
-            echo "<h2>Procurando página...</h2>";
+            echo "<h2>Procurando página...</h2> ";
+            echo "Progresso: ";
             $event_handler->listen('proxima_pagina', function ($página) {
-                echo "<p>Procurando na página $página</p>";
-                ob_end_flush();
-                ob_implicit_flush(true);
+                echo "$página, ";
                 ob_flush();
                 flush();
             });
