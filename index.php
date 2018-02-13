@@ -2,6 +2,10 @@
     require_once 'vendor/autoload.php';
 
     use ML_Encontra_Link\EncontraLink;
+    use ML_Encontra_Link\Event;
+
+    header( 'Content-type: text/html; charset=utf-8' );
+    header('X-Accel-Buffering: no');
 
     if (! isset($_POST['pagina'])) {
 ?>
@@ -15,9 +19,19 @@
 
 <?php
     } else {
-        $encontra_link = new EncontraLink();
+        $event_handler = new Event();
+        $encontra_link = new EncontraLink($event_handler);
         try {
+            echo "<h2>Procurando página...</h2>";
+            $event_handler->listen('proxima_pagina', function ($página) {
+                echo "<p>Procurando na página $página</p>";
+                ob_end_flush();
+                ob_implicit_flush(true);
+                ob_flush();
+                flush();
+            });
             $pagina = $encontra_link->encontra($_POST['pagina']);
+
             echo "<h2>Achamos a página: $encontra_link->página</h2>";
             echo "<a href='$pagina' noreferrer noopener>$pagina</a><br>";
             echo "<a href='.'>Voltar</a>";

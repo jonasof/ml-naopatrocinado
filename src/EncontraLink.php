@@ -10,11 +10,17 @@ class EncontraLink
     public $preços = [];
     public $página = 1;
 
+    public function __construct(Event $event_emitter)
+    {
+        $this->event_emitter = $event_emitter;
+    }
+
     public function encontra($página)
     {
         $client = new Client();
 
-        $crawler = $client->request('GET', $página);
+        $this->event_emitter->emit('proxima_pagina', [$this->página]);
+        $crawler = $client->request('GET', $this->encontraPáginaOrdenada($página));
 
         obter:
         $this->obtémPreços($crawler);
@@ -25,11 +31,17 @@ class EncontraLink
             if (!$crawler->filter('.pagination__next.pagination--disabled')->count()) {
                 $crawler = $client->click($crawler->filter('.pagination__next a')->link());
                 $this->página++;
+                $this->event_emitter->emit('proxima_pagina', [$this->página]);
                 goto obter;
             } else {
                 throw new \Exception("Não conseguimos encontrar a página");
             }
         }
+    }
+
+    public function encontraPáginaOrdenada ($página)
+    {
+        return $página;
     }
 
     public function obtémPreços(Crawler $crawler)

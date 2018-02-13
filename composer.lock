@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "362854c4ebdcdd3daa10307af97a88bf",
-    "content-hash": "39ec69e8797d9a702c5a98ea7f71604e",
+    "hash": "e24a2482d601b4d6d6c33da3d414fc43",
+    "content-hash": "6f52965537e2ead53f3d9e1bffcbb357",
     "packages": [
         {
             "name": "fabpot/goutte",
@@ -292,6 +292,63 @@
                 "response"
             ],
             "time": "2016-08-06 14:39:51"
+        },
+        {
+            "name": "sabre/event",
+            "version": "3.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/sabre-io/event.git",
+                "reference": "831d586f5a442dceacdcf5e9c4c36a4db99a3534"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/sabre-io/event/zipball/831d586f5a442dceacdcf5e9c4c36a4db99a3534",
+                "reference": "831d586f5a442dceacdcf5e9c4c36a4db99a3534",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.5"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "*",
+                "sabre/cs": "~0.0.4"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Sabre\\Event\\": "lib/"
+                },
+                "files": [
+                    "lib/coroutine.php",
+                    "lib/Loop/functions.php",
+                    "lib/Promise/functions.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Evert Pot",
+                    "email": "me@evertpot.com",
+                    "homepage": "http://evertpot.com/",
+                    "role": "Developer"
+                }
+            ],
+            "description": "sabre/event is a library for lightweight event-based programming",
+            "homepage": "http://sabre.io/event/",
+            "keywords": [
+                "EventEmitter",
+                "async",
+                "events",
+                "hooks",
+                "plugin",
+                "promise",
+                "signal"
+            ],
+            "time": "2015-11-05 20:14:39"
         },
         {
             "name": "symfony/browser-kit",

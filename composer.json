@@ -3,7 +3,8 @@
         "phpunit/phpunit": "^5.7"
     },
     "require": {
-        "fabpot/goutte": "^3.2"
+        "fabpot/goutte": "^3.2",
+        "sabre/event": "^3.0"
     },
     "autoload": {
         "psr-4": {
