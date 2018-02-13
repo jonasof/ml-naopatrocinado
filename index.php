@@ -32,8 +32,8 @@
             $pagina = $encontra_link->encontra($_POST['pagina']);
 
             echo "<h2>Achamos a página: $encontra_link->página</h2>";
-            echo "<a href='$pagina' noreferrer noopener>$pagina</a><br>";
-            echo "<a href='.'>Voltar</a>";
+            echo "<p><a href='$pagina' noreferrer noopener>$pagina</a></p>";
+            echo "<p><a href='.'>Voltar</a></p>";
         } catch (\Exception $e) {
             echo $e->getMessage();
         }
