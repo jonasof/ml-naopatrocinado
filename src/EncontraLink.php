@@ -2,7 +2,7 @@
 
 namespace ML_Encontra_Link;
 
-use Goutte\Client;
+use Goutte\Client as GoutteClient;
 use Symfony\Component\DomCrawler\Crawler;
 
 class EncontraLink
@@ -17,7 +17,10 @@ class EncontraLink
 
     public function encontra($página)
     {
-        $client = new Client();
+        $client = new GoutteClient();
+        if (isset($_SERVER['HTTP_USER_AGENT'])){
+            $client->setHeader('User-Agent', $_SERVER['HTTP_USER_AGENT']);
+        }
 
         $this->event_emitter->emit('proxima_pagina', [$this->página]);
         $crawler = $client->request('GET', $this->encontraPáginaOrdenada($página));
