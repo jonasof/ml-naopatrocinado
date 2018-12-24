@@ -1,2 +1,4 @@
+test.
+
  SetEnv no-gzip 1
 FcgidOutputBufferSize 0
