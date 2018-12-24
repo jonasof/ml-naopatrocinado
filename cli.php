@@ -2,11 +2,9 @@
 
 require_once 'vendor/autoload.php';
 
-use ML_Encontra_Link\EncontraLink;
+use MLEncontraLinkNãoPatrocinado\EncontraLink;
 
-$event_handler = new ML_Encontra_Link\Event;
-
-$encontra_link = new EncontraLink($event_handler);
+$encontra_link = new EncontraLink();
 try {
     $pagina = $encontra_link->encontra($argv[1]);
     echo "Página ($encontra_link->página): $pagina";

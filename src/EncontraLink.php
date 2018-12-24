@@ -1,66 +1,124 @@
 <?php
 
-namespace ML_Encontra_Link;
+namespace MLEncontraLinkNãoPatrocinado;
 
+use Sabre\Event\EventEmitter;
 use Goutte\Client as GoutteClient;
-use Symfony\Component\DomCrawler\Crawler;
 
 class EncontraLink
 {
     public $preços = [];
-    public $página = 1;
+    public $página = 0;
 
-    public function __construct(Event $event_emitter)
+    protected $event_emitter;
+    protected $client;
+    protected $crawler;
+
+    public function __construct(EventEmitter $event_emitter = null)
     {
-        $this->event_emitter = $event_emitter;
+        $this->event_emitter = $event_emitter ?? new EventEmitter();
+        $this->client = $this->configurarClient();
+        $this->crawler = null;
     }
 
-    public function encontra($página)
+    protected function configurarClient () : GoutteClient
     {
         $client = new GoutteClient();
+
         if (isset($_SERVER['HTTP_USER_AGENT'])){
             $client->setHeader('User-Agent', $_SERVER['HTTP_USER_AGENT']);
         }
 
-        $this->event_emitter->emit('proxima_pagina', [$this->página]);
-        $crawler = $client->request('GET', $this->encontraPáginaOrdenada($página));
+        return $client;
+    }
 
-        obter:
-        $this->obtémPreços($crawler);
+    public function encontra($página)
+    {
+        $this->encontraPrimeiraPáginaOrdenadaPorPreço($página);
 
-        if (!$this->estáOrdenado()) {
-            return $crawler->getUri();
-        } else {
-            if (!$crawler->filter('.pagination__next.pagination--disabled')->count()) {
-                $crawler = $client->click($crawler->filter('.pagination__next a')->link());
-                $this->página++;
-                $this->event_emitter->emit('proxima_pagina', [$this->página]);
-                goto obter;
-            } else {
-                throw new \Exception("Não conseguimos encontrar a página");
+        processar_página:
+
+        $this->registrarAvanço();
+        $this->obtémPreços();
+
+        if ($this->preçosAindaEstãoOrdenados()) {
+            if ($this->éAÚltimaPágina()) {
+                throw new Exceções\LinkNãoEncontrado ();
             }
+
+            $this->irParaPróximaPágina();
+
+            goto processar_página;
+        }
+
+        return $this->crawler->getUri();
+    }
+
+    protected function encontraPrimeiraPáginaOrdenadaPorPreço ($página)
+    {
+        $this->crawler = $this->client->request('GET', $página);
+
+        $this->clicarEmOrdenaçãoDeMenorPreço();
+        $this->irParaPrimeiraPágina();
+    }
+
+    protected function clicarEmOrdenaçãoDeMenorPreço ()
+    {
+        try {
+            $this->crawler = $this->client->click($this->crawler->selectLink('Menor preço')->link());
+        } catch (\Exception $e) {}
+    }
+
+    protected function irParaPrimeiraPágina ()
+    {
+        if (preg_match('/_Desde_\d+/',$this->crawler->getUri())) {
+            $url = preg_replace('/_Desde_\d+/', '', $this->crawler->getUri());
+            $this->crawler = $this->client->request('GET', $url);
         }
     }
 
-    public function encontraPáginaOrdenada ($página)
+    protected function obtémPreços()
     {
-        return $página;
-    }
+        if ($this->crawler->filter('.price__fraction')->count() === 0) {
+             throw new Exceções\PreçosNãoEncontrados();
+        }
 
-    public function obtémPreços(Crawler $crawler)
-    {
-        $crawler->filter('.price__fraction')->each(function ($node) {
+        $this->crawler->filter('.price__fraction')->each(function ($node) {
             $this->preços[] = (float) str_replace([',', '.'], "", $node->text());
         });
     }
 
-    public function estáOrdenado()
+    protected function éAÚltimaPágina() : bool
+    {
+        return $this->crawler->filter('.andes-pagination__button--next.andes-pagination__button--disabled')->count() > 0;
+    }
+
+    protected function preçosAindaEstãoOrdenados() : bool
     {
         for ($x = 0; $x < count($this->preços)-1; $x++) {
-            if ($this->preços[$x] > $this->preços[$x+1]) {
+            $preçoAtual = $this->preços[$x];
+            $preçoPosterior = $this->preços[$x+1];
+
+            $tolerância = 1.1; // 10% é um adicional para evitar uma falsa detecção pois
+                               // algumas vezes o mercado livre não ordena corretamente os produtos
+
+            if ($preçoAtual > $preçoPosterior * $tolerância) {
                 return false;
             }
         }
+
         return true;
+    }
+
+    protected function irParaPróximaPágina ()
+    {
+        $link = $this->crawler->filter('.andes-pagination__button--next .andes-pagination__link')->link();
+        $this->crawler = $this->client->click($link);
+    }
+
+    protected function registrarAvanço ()
+    {
+        $this->página++;
+        $this->event_emitter->emit('próxima_pagina', [$this->página]);
     }
 }
