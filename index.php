@@ -7,6 +7,7 @@
 
     header( 'Content-type: text/html; charset=utf-8' );
     header('X-Accel-Buffering: no');
+    ini_set('output_buffering', false);
 
     if (!isset($_POST['pagina'])) {
         ?>
