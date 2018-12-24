@@ -1,0 +1,15 @@
+{
+    "require": {
+        "php": ">=7.1.0",
+        "fabpot/goutte": "^3.2",
+        "sabre/event": "^3.0"
+    },
+    "require-dev": {
+        "psy/psysh": "^0.9.9"
+    },
+    "autoload": {
+        "psr-4": {
+            "MLEncontraLinkNãoPatrocinado\\" : "src/"
+        }
+    }
+}
