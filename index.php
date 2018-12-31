@@ -51,7 +51,7 @@
             <p>Exemplo:</p>
             <p><img src='./exemplo.jpg' width='500' /></p>
 
-            <p><a href='http://github.com/jonasof/ml-nao-patrocinado'>Código Fonte</a></p>
+            <p><a href='https://github.com/jonasof/ml-naopatrocinado'>Código Fonte</a></p>
         </div>
 
         <?php
