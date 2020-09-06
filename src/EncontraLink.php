@@ -83,11 +83,11 @@ class EncontraLink
 
     protected function obtémPreços()
     {
-        if ($this->crawler->filter('.price__fraction')->count() === 0) {
+        if ($this->crawler->filter('.ui-search-item__group--price .price-tag-fraction')->count() === 0) {
              throw new Exceções\PreçosNãoEncontrados();
         }
 
-        $this->crawler->filter('.price__fraction')->each(function ($node) {
+        $this->crawler->filter('.ui-search-item__group--price .price-tag-fraction')->each(function ($node) {
             $this->preços[] = (float) str_replace([',', '.'], "", $node->text());
         });
     }
@@ -104,7 +104,7 @@ class EncontraLink
             $preçoAtual = $this->preços[$x];
             $preçoPosterior = $this->preços[$x+1];
 
-            $tolerância = 1.1; // 10% é um adicional para evitar uma falsa detecção pois
+            $tolerância = 1.5; // 50% é um adicional para evitar uma falsa detecção pois
                                // algumas vezes o mercado livre não ordena corretamente os produtos
 
             if ($preçoAtual > $preçoPosterior * $tolerância) {
