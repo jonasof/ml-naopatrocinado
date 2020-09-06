@@ -12,6 +12,9 @@ class EncontraLink
 
     protected $event_emitter;
     protected $client;
+    /**
+     * @var \Symfony\Component\DomCrawler\Crawler $crawler
+     */
     protected $crawler;
 
     public function __construct(EventEmitter $event_emitter = null)
@@ -21,11 +24,11 @@ class EncontraLink
         $this->crawler = null;
     }
 
-    protected function configurarClient () : GoutteClient
+    protected function configurarClient() : GoutteClient
     {
         $client = new GoutteClient();
 
-        if (isset($_SERVER['HTTP_USER_AGENT'])){
+        if (isset($_SERVER['HTTP_USER_AGENT'])) {
             $client->setHeader('User-Agent', $_SERVER['HTTP_USER_AGENT']);
         }
 
@@ -43,7 +46,7 @@ class EncontraLink
 
         if ($this->preçosAindaEstãoOrdenados()) {
             if ($this->éAÚltimaPágina()) {
-                throw new Exceções\LinkNãoEncontrado ();
+                throw new Exceções\LinkNãoEncontrado();
             }
 
             $this->irParaPróximaPágina();
@@ -54,7 +57,7 @@ class EncontraLink
         return $this->crawler->getUri();
     }
 
-    protected function encontraPrimeiraPáginaOrdenadaPorPreço ($página)
+    protected function encontraPrimeiraPáginaOrdenadaPorPreço($página)
     {
         $this->crawler = $this->client->request('GET', $página);
 
@@ -62,16 +65,17 @@ class EncontraLink
         $this->irParaPrimeiraPágina();
     }
 
-    protected function clicarEmOrdenaçãoDeMenorPreço ()
+    protected function clicarEmOrdenaçãoDeMenorPreço()
     {
         try {
             $this->crawler = $this->client->click($this->crawler->selectLink('Menor preço')->link());
-        } catch (\Exception $e) {}
+        } catch (\Exception $e) {
+        }
     }
 
-    protected function irParaPrimeiraPágina ()
+    protected function irParaPrimeiraPágina()
     {
-        if (preg_match('/_Desde_\d+/',$this->crawler->getUri())) {
+        if (preg_match('/_Desde_\d+/', $this->crawler->getUri())) {
             $url = preg_replace('/_Desde_\d+/', '', $this->crawler->getUri());
             $this->crawler = $this->client->request('GET', $url);
         }
@@ -90,7 +94,8 @@ class EncontraLink
 
     protected function éAÚltimaPágina() : bool
     {
-        return $this->crawler->filter('.andes-pagination__button--next.andes-pagination__button--disabled')->count() > 0;
+        return $this->crawler->filter('.andes-pagination__button--next.andes-pagination__button--disabled')->count()
+            > 0;
     }
 
     protected function preçosAindaEstãoOrdenados() : bool
@@ -110,13 +115,13 @@ class EncontraLink
         return true;
     }
 
-    protected function irParaPróximaPágina ()
+    protected function irParaPróximaPágina()
     {
         $link = $this->crawler->filter('.andes-pagination__button--next .andes-pagination__link')->link();
         $this->crawler = $this->client->click($link);
     }
 
-    protected function registrarAvanço ()
+    protected function registrarAvanço()
     {
         $this->página++;
         $this->event_emitter->emit('próxima_pagina', [$this->página]);

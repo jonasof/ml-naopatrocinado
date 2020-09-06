@@ -5,7 +5,8 @@
         "sabre/event": "^3.0"
     },
     "require-dev": {
-        "psy/psysh": "^0.9.9"
+        "psy/psysh": "^0.9.9",
+        "squizlabs/php_codesniffer": "^3.5"
     },
     "autoload": {
         "psr-4": {
