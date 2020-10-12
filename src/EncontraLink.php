@@ -83,11 +83,13 @@ class EncontraLink
 
     protected function obtémPreços()
     {
-        if ($this->crawler->filter('.ui-search-item__group--price .price-tag-fraction')->count() === 0) {
+        $query = ".ui-search-item__group > .ui-search-price .price-tag-fraction";
+
+        if ($this->crawler->filter($query)->count() === 0) {
              throw new Exceções\PreçosNãoEncontrados();
         }
 
-        $this->crawler->filter('.ui-search-item__group--price .price-tag-fraction')->each(function ($node) {
+        $this->crawler->filter($query)->each(function ($node) {
             $this->preços[] = (float) str_replace([',', '.'], "", $node->text());
         });
     }
