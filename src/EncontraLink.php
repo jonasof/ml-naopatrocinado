@@ -83,7 +83,7 @@ class EncontraLink
 
     protected function obtémPreços()
     {
-        $query = ".ui-search-item__group > .ui-search-price .price-tag-fraction";
+        $query = ".ui-search-price__part-without-link .ui-search-price__part:not(.ui-search-price__original-value) .price-tag-amount .price-tag-fraction";
 
         if ($this->crawler->filter($query)->count() === 0) {
              throw new Exceções\PreçosNãoEncontrados();
