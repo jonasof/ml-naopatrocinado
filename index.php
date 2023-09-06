@@ -20,7 +20,7 @@ if (!isset($_POST['pagina'])) {
 
         <form action="." method="POST" style="text-align: center;">
             <p>
-                Insira o link de uma pesquisa:
+                Insira o link de uma pesquisa ordenada pelo menor preço:
             </p>
             <p>
                 <input type="text" name='pagina' size=90 style="max-width: 100%"></input>

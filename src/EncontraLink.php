@@ -3,7 +3,8 @@
 namespace MLEncontraLinkNãoPatrocinado;
 
 use Sabre\Event\EventEmitter;
-use Goutte\Client as GoutteClient;
+use Symfony\Component\BrowserKit\HttpBrowser;
+use Symfony\Component\HttpClient\HttpClient;
 
 class EncontraLink
 {
@@ -24,13 +25,13 @@ class EncontraLink
         $this->crawler = null;
     }
 
-    protected function configurarClient() : GoutteClient
+    protected function configurarClient() : HttpBrowser
     {
-        $client = new GoutteClient();
-
-        if (isset($_SERVER['HTTP_USER_AGENT'])) {
-            $client->setHeader('User-Agent', $_SERVER['HTTP_USER_AGENT']);
-        }
+        $client = new HttpBrowser(HttpClient::create([
+            'headers' => [
+                'User-Agent' => $_SERVER['HTTP_USER_AGENT']
+            ]
+        ]));
 
         return $client;
     }
@@ -65,6 +66,9 @@ class EncontraLink
         $this->irParaPrimeiraPágina();
     }
 
+    /** 
+     * Não está funcionando
+     */
     protected function clicarEmOrdenaçãoDeMenorPreço()
     {
         try {
@@ -83,7 +87,7 @@ class EncontraLink
 
     protected function obtémPreços()
     {
-        $query = ".ui-search-price__part-without-link .ui-search-price__part:not(.ui-search-price__original-value) .price-tag-amount .price-tag-fraction";
+        $query = ".ui-search-price__part-without-link .ui-search-price__second-line .andes-money-amount__fraction";
 
         if ($this->crawler->filter($query)->count() === 0) {
              throw new Exceções\PreçosNãoEncontrados();

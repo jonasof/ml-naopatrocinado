@@ -1,16 +1,23 @@
 {
     "require": {
         "php": ">=7.1.0",
-        "fabpot/goutte": "^3.2",
-        "sabre/event": "^3.0"
+        "sabre/event": "^5.1",
+        "symfony/browser-kit": "^5.4",
+        "symfony/http-client": "^5.4",
+        "symfony/css-selector": "^5.4"
     },
     "require-dev": {
-        "psy/psysh": "^0.9.9",
-        "squizlabs/php_codesniffer": "^3.5"
+        "psy/psysh": "^0.11.20",
+        "squizlabs/php_codesniffer": "^3.7"
     },
     "autoload": {
         "psr-4": {
             "MLEncontraLinkNãoPatrocinado\\" : "src/"
+        }
+    },
+    "config": {
+        "platform": {
+            "php": "7.3.0"
         }
     }
 }
